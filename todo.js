@@ -1,3 +1,4 @@
+
 // Input
 var writeTask = document.querySelector("#writeTask");
 // Buttons
@@ -8,32 +9,35 @@ var removeIcon = document.querySelector("#removeIcon");
 // Show task
 var showResult = document.querySelector("#showResult");
 
-
-
 // empty array
 var taskArray = [];
 
 // button add task
 function clickAddButton() {
-
     var inputValue = writeTask.value;
 
     if (!inputValue.trim()) {
         alert("Please fill in the blank");
-        return
+        return;
     }
 
-    taskArray.push(inputValue)
+    taskArray.push(inputValue);
 
-    writeTask.value = " "
+   
+    localStorage.setItem("taskArray", JSON.stringify(taskArray));
+
+    writeTask.value = " ";
     
-    showTask()
-
+    showTask();
 }
 
-// button array map method
-function showTask(arr) {
-    
+
+function showTask() {
+   
+    var storedTaskArray = JSON.parse(localStorage.getItem("taskArray")) || [];
+
+    taskArray = storedTaskArray;
+
     showResult.innerHTML = taskArray
       .map(function (item, index) {
         return `<li class="list-group-item  d-flex justify-content-between">${
@@ -43,43 +47,36 @@ function showTask(arr) {
       .join("");
 }
 
-// button remove task
+
 function removeButton(index) {
+    taskArray.splice(index, 1);
 
+   
+    localStorage.setItem("taskArray", JSON.stringify(taskArray));
 
-    removeList = taskArray.filter(function (_, elementIndex) {
-        if (elementIndex !== index) return true
-            
-        return false
-    })
-
-    taskArray = removeList
-
-    showTask()
+    showTask();
 }
 
 // button remove all data
 function removeAllData() {
     taskArray = [];
 
+   
+    localStorage.setItem("taskArray", JSON.stringify(taskArray));
+
     showTask();
 }
+
+
+showTask();
 
 // press Enter for add task 
 writeTask.addEventListener('keyup', (e) => {
     if (e.keyCode === 13) {
-        clickAddButton()
+        clickAddButton();
     }
-})
-
-
-
-
-
+});
 
 addButton.onclick = clickAddButton;
 
-removeAllButton.onclick = removeAllData
-
-
-
+removeAllButton.onclick = removeAllData;
